@@ -6,11 +6,12 @@ module.exports = function(grunt) {
 
     jshint: {
       all: [
-        'ng-alertify.js'
+        'ng-waffle.js'
       ],
       specs: ['test/*-spec.js'],
       options: {
-        jshintrc: '.jshintrc'
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-summary')
       }
     },
 
