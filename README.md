@@ -31,7 +31,32 @@ angular.module('MyApp', ['Waffle'])
   });
 ```
 
-*API doc - coming soon*
+## API
+
+**Waffle.set(flag, true|false)**
+
+Sets given the flag
+
+**Waffle.on(flag)**
+
+Shortcut to turn a flag
+
+**Waffle.off(flag)**
+
+Shortcut to turn off a flag
+
+**Waffle.is(flag)**
+
+Returns current state of the flag. Alias `Waffle.flag_is_active(flag)`. There is also
+`Waffle.switch_is_active(switchName)`.
+
+**Waffle.reset()**
+
+Removes all switches / flags.
+
+**Waffle.flags** - object with all flags.
+
+**Waffle.switches** - object with all switches.
 
 ## License
 
