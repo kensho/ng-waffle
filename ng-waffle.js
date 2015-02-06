@@ -1,15 +1,17 @@
-(function (angular, waffle) {
+(function (angular, waffle, la) {
   /* jshint -W106 */
   var m = angular.module('Waffle', []);
 
-  function la(predicate) {
-    if (!predicate) {
-      var msg = Array.prototype.slice.call(arguments, 1)
-        .map(function (x) {
-          return typeof x === 'string' ? x : JSON.stringify(x);
-        }).join(' ');
-      throw new Error(msg);
-    }
+  if (!la) {
+    la = function la(predicate) {
+      if (!predicate) {
+        var msg = Array.prototype.slice.call(arguments, 1)
+          .map(function (x) {
+            return typeof x === 'string' ? x : JSON.stringify(x);
+          }).join(' ');
+        throw new Error(msg);
+      }
+    };
   }
 
   function unemptyString(x) {
@@ -45,10 +47,10 @@
 
     see waffle-mock-spec.js
   */
-  m.factory('Waffle', function () {
-    var _waffle_flags = {};
-    var _waffle_switches = {};
+  var _waffle_switches = {};
+  var _waffle_flags = {};
 
+  m.factory('Waffle', function () {
     if (!waffle) {
       // mock waffle
       waffle = window.waffle = {
@@ -103,4 +105,4 @@
     return waffleMock;
   });
 
-}(window.angular, window.waffle));
+}(window.angular, window.waffle, window.la));

@@ -1,4 +1,4 @@
-/* global helpDescribe, ngDescribe, it, la */
+/* global helpDescribe, ngDescribe, beforeEach, it, la */
 helpDescribe('waffle-mock', function () {
   /* jshint -W106 */
   var check = window.check;
@@ -9,6 +9,10 @@ helpDescribe('waffle-mock', function () {
     inject: 'Waffle',
     only: false,
     tests: function (deps) {
+      beforeEach(function () {
+        deps.Waffle.reset();
+      });
+
       it('window.waffle', function () {
         la(check.object(window.waffle));
       });
@@ -39,12 +43,16 @@ helpDescribe('waffle-mock', function () {
 
       it('can use aliases', function () {
         la(!window.waffle.flag_is_active('foo'));
+
         deps.Waffle.on('foo');
         deps.Waffle.on('bar');
-        la(window.waffle.flag_is_active('foo'));
+
+        la(window.waffle.flag_is_active('foo'), 'turned on both foo and bar');
         la(window.waffle.flag_is_active('bar'));
+
         deps.Waffle.off('bar');
-        la(window.waffle.flag_is_active('foo'));
+
+        la(window.waffle.flag_is_active('foo'), 'after turned off bar');
         la(!window.waffle.flag_is_active('bar'));
       });
 
