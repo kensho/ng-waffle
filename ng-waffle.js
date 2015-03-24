@@ -1,4 +1,4 @@
-(function (angular, waffle, la) {
+(function (angular, waffle, la, lac) {
   /* jshint -W106 */
   var m = angular.module('Waffle', []);
 
@@ -13,6 +13,19 @@
       }
     };
   }
+
+  // throws an error asynchronously
+  var warn = lac ? lac : function warn(predicate) {
+    if (!predicate) {
+      var msg = Array.prototype.slice.call(arguments, 1)
+        .map(function (x) {
+          return typeof x === 'string' ? x : JSON.stringify(x);
+        }).join(' ');
+      setTimeout(function () {
+        throw new Error(msg);
+      }, 0);
+    }
+  };
 
   function unemptyString(x) {
     return x && typeof x === 'string';
@@ -56,11 +69,15 @@
       waffle = window.waffle = {
         flag_is_active: function (key) {
           la(unemptyString(key), 'expected string waffle flag', key);
+          warn(typeof _waffle_flags[key] !== 'undefined',
+            'cannot find flag', key);
           return Boolean(_waffle_flags[key]);
         },
 
         switch_is_active: function (key) {
           la(unemptyString(key), 'expected string switch flag', key);
+          warn(typeof _waffle_switches[key] !== 'undefined',
+            'cannot find flag', key);
           return Boolean(_waffle_switches[key]);
         }
       };
@@ -68,6 +85,14 @@
 
     la(window.waffle, 'cannot find window.waffle');
     var waffleMock = Object.create(window.waffle);
+
+    // add additional check
+    waffleMock.flag_is_active = function (key) {
+      la(unemptyString(key), 'expected string waffle flag', key);
+      var value = window.waffle.flag_is_active[key];
+      warn(typeof value !== 'undefined', 'cannot find flag', key);
+      return value;
+    };
 
     waffleMock.reset = function () {
       _waffle_flags = {};
@@ -105,4 +130,4 @@
     return waffleMock;
   });
 
-}(window.angular, window.waffle, window.la));
+}(window.angular, window.waffle, window.la, window.lac));
