@@ -14,7 +14,6 @@
     "package.json",
     "index.html"
   ],
-  "author": "Gleb Bahmutov <gleb@kensho.com>",
   "keywords": [
     "angular",
     "angularjs",
@@ -24,5 +23,9 @@
     "switches",
     "flags"
   ],
-  "homepage": "https://github.com/kensho/ng-waffle"
+  "homepage": "https://github.com/kensho/ng-waffle",
+  "authors": [
+    "Gleb Bahmutov <gleb@kensho.com>"
+  ],
+  "description": "AngularJS wrapper around Django Waffle"
 }
