@@ -58,6 +58,12 @@ Removes all switches / flags.
 
 **Waffle.switches** - object with all switches.
 
+## Notes
+
+* If the flag does not exist when checking it using `Waffle.is` or `Waffle.flag_is_active` the library
+throws an asynchronous error. This is useful to detect if the front end waffles got out of sync with
+back end configuration.
+
 ## License
 
 Author: Kensho &copy; 2015

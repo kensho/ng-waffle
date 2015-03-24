@@ -36,24 +36,25 @@ helpDescribe('waffle-mock', function () {
       });
 
       it('can set flags and read them', function () {
-        la(!window.waffle.flag_is_active('foo'));
+        la(!deps.Waffle.flags.foo, 'initially does not have flag "foo"');
         deps.Waffle.set('foo', true);
         la(window.waffle.flag_is_active('foo'));
       });
 
       it('can use aliases', function () {
-        la(!window.waffle.flag_is_active('foo'));
+        la(!deps.Waffle.flags.foo, 'initially does not have flag "foo"');
 
         deps.Waffle.on('foo');
         deps.Waffle.on('bar');
 
-        la(window.waffle.flag_is_active('foo'), 'turned on both foo and bar');
-        la(window.waffle.flag_is_active('bar'));
+        la(window.waffle.flag_is_active('foo'), 'turned on both foo');
+        la(window.waffle.flag_is_active('bar'), 'turned on both bar');
 
         deps.Waffle.off('bar');
 
-        la(window.waffle.flag_is_active('foo'), 'after turned off bar');
-        la(!window.waffle.flag_is_active('bar'));
+        la(window.waffle.flag_is_active('foo'), 'foo is still on');
+
+        la(!window.waffle.flag_is_active('bar'), 'flag "bar" is turned off');
       });
 
       it('can be reset', function () {
@@ -61,11 +62,16 @@ helpDescribe('waffle-mock', function () {
         deps.Waffle.on('foo');
         la(window.waffle.flag_is_active('foo'));
         deps.Waffle.reset();
-        la(!window.waffle.flag_is_active('foo'));
+        la(!deps.Waffle.flags.foo, 'does not have flag "foo" anymore');
+      });
+
+      it('adds flag using .on', function () {
+        deps.Waffle.on('bar');
+        la(deps.Waffle.flag_is_active('bar'), 'flag "bar" is active');
       });
 
       it('has fluent interface', function () {
-        la(deps.Waffle.set('foo', true) === deps.Waffle);
+        la(deps.Waffle.set('foo', true) === deps.Waffle, 'returns itself from set method');
         la(deps.Waffle.set('foo', true).on('bar').flag_is_active('bar'));
       });
 

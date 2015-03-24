@@ -1,4 +1,6 @@
 (function (angular, waffle, la, lac) {
+  'use strict';
+
   /* jshint -W106 */
   var m = angular.module('Waffle', []);
 
@@ -29,6 +31,13 @@
 
   function unemptyString(x) {
     return x && typeof x === 'string';
+  }
+
+  // removes all keys from an existing object
+  function cleanObject(obj) {
+    Object.keys(obj).forEach(function (key) {
+      delete obj[key];
+    });
   }
 
   /*
@@ -66,17 +75,17 @@
   m.factory('Waffle', function () {
     if (!waffle) {
       // mock waffle
-      waffle = window.waffle = {
+      window.waffle = {
         flag_is_active: function (key) {
           la(unemptyString(key), 'expected string waffle flag', key);
-          warn(typeof _waffle_flags[key] !== 'undefined',
-            'cannot find flag', key);
+          la(typeof _waffle_flags[key] !== 'undefined',
+            'cannot find flag', key, _waffle_flags);
           return Boolean(_waffle_flags[key]);
         },
 
         switch_is_active: function (key) {
           la(unemptyString(key), 'expected string switch flag', key);
-          warn(typeof _waffle_switches[key] !== 'undefined',
+          la(typeof _waffle_switches[key] !== 'undefined',
             'cannot find flag', key);
           return Boolean(_waffle_switches[key]);
         }
@@ -87,16 +96,16 @@
     var waffleMock = Object.create(window.waffle);
 
     // add additional check
-    waffleMock.flag_is_active = function (key) {
+    waffleMock.flag_is_active = function flag_is_active(key) {
       la(unemptyString(key), 'expected string waffle flag', key);
-      var value = window.waffle.flag_is_active[key];
+      var value = window.waffle.flag_is_active(key);
       warn(typeof value !== 'undefined', 'cannot find flag', key);
       return value;
     };
 
     waffleMock.reset = function () {
-      _waffle_flags = {};
-      _waffle_switches = {};
+      cleanObject(_waffle_flags);
+      cleanObject(_waffle_switches);
     };
 
     waffleMock.set = function (flag, value) {
