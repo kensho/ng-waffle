@@ -98,4 +98,29 @@ helpDescribe('waffle-mock', function () {
       });
     }
   });
+
+  ngDescribe({
+    name: 'waffle factory config',
+    modules: 'Waffle',
+    inject: 'Waffle',
+    only: false,
+    configs: {
+      WaffleConfig: {
+        warnIfMissingFlag: false
+      }
+    },
+    tests: function (deps) {
+      beforeEach(function () {
+        deps.Waffle.reset();
+      });
+
+      it('does not check waffle flag existance', function (done) {
+        la(!deps.Waffle.flags.foo, 'there is no waffle flag "foo"');
+        la(!deps.Waffle.flag_is_active('foo'), 'flag "foo" is not active');
+        // let any error surface
+        setTimeout(done, 50);
+      });
+    }
+  });
+
 });

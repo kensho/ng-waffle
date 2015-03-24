@@ -1,7 +1,7 @@
 {
   "name": "ng-waffle",
   "description": "AngularJS wrapper around Django Waffle",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Gleb Bahmutov <gleb@kensho.com>",
   "bugs": {
     "url": "https://github.com/kensho/ng-waffle/issues"

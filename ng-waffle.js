@@ -2,7 +2,41 @@
   'use strict';
 
   /* jshint -W106 */
-  var m = angular.module('Waffle', []);
+  function unemptyString(x) {
+    return x && typeof x === 'string';
+  }
+
+  // removes all keys from an existing object
+  function cleanObject(obj) {
+    Object.keys(obj).forEach(function (key) {
+      delete obj[key];
+    });
+  }
+
+  function copyObject(from, to) {
+    cleanObject(to);
+    Object.keys(from).forEach(function (key) {
+      to[key] = from[key];
+    });
+  }
+
+  angular.module('WaffleConfig', [])
+    .provider('WaffleConfig', function () {
+      var options = {
+        warnIfMissingFlag: true
+      };
+
+      return {
+        set: function (opts) {
+          copyObject(opts, options);
+        },
+        $get: function () {
+          return options;
+        }
+      };
+    });
+
+  var m = angular.module('Waffle', ['WaffleConfig']);
 
   if (!la) {
     la = function la(predicate) {
@@ -28,17 +62,6 @@
       }, 0);
     }
   };
-
-  function unemptyString(x) {
-    return x && typeof x === 'string';
-  }
-
-  // removes all keys from an existing object
-  function cleanObject(obj) {
-    Object.keys(obj).forEach(function (key) {
-      delete obj[key];
-    });
-  }
 
   /*
     Mock waffles for unit testing or for wrapping around existing waffle object
@@ -72,14 +95,19 @@
   var _waffle_switches = {};
   var _waffle_flags = {};
 
-  m.factory('Waffle', function () {
+  function waffleFactory(config) {
+    la(typeof config === 'object', 'missing config object', config);
+
     if (!waffle) {
       // mock waffle
       window.waffle = {
         flag_is_active: function (key) {
           la(unemptyString(key), 'expected string waffle flag', key);
-          la(typeof _waffle_flags[key] !== 'undefined',
-            'cannot find flag', key, _waffle_flags);
+
+          if (config.warnIfMissingFlag) {
+            warn(typeof _waffle_flags[key] !== 'undefined',
+              'cannot find flag', key, _waffle_flags);
+          }
           return Boolean(_waffle_flags[key]);
         },
 
@@ -99,7 +127,9 @@
     waffleMock.flag_is_active = function flag_is_active(key) {
       la(unemptyString(key), 'expected string waffle flag', key);
       var value = window.waffle.flag_is_active(key);
-      warn(typeof value !== 'undefined', 'cannot find flag', key);
+      if (config.warnIfMissingFlag) {
+        warn(typeof value !== 'undefined', 'cannot find flag', key);
+      }
       return value;
     };
 
@@ -137,6 +167,8 @@
     waffleMock.switches = _waffle_switches;
 
     return waffleMock;
-  });
+  }
+
+  m.factory('Waffle', ['WaffleConfig', waffleFactory]);
 
 }(window.angular, window.waffle, window.la, window.lac));

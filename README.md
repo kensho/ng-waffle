@@ -64,6 +64,18 @@ Removes all switches / flags.
 throws an asynchronous error. This is useful to detect if the front end waffles got out of sync with
 back end configuration.
 
+To disable automatic waffle check and treat `undefined` values like `false`, use a provider to configure
+the `Waffle` module from the user code.
+
+```js
+angular.module('UserApp', ['Waffle'])
+    .config(function (WaffleConfigProvider) {
+        WaffleConfigProvider.set({
+            warnIfMissingFlag: false
+        });
+    });
+```
+
 ## License
 
 Author: Kensho &copy; 2015
