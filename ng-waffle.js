@@ -23,7 +23,7 @@
   angular.module('WaffleConfig', [])
     .provider('WaffleConfig', function () {
       var options = {
-        warnIfMissingFlag: true
+        warnIfMissingFlag: false
       };
 
       return {

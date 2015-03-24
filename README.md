@@ -61,17 +61,17 @@ Removes all switches / flags.
 ## Notes
 
 * If the flag does not exist when checking it using `Waffle.is` or `Waffle.flag_is_active` the library
-throws an asynchronous error. This is useful to detect if the front end waffles got out of sync with
-back end configuration.
+treats this as false. You might want to treat this as an asynchronous error. 
+This is useful to detect if the front end waffles got out of sync with back end configuration.
 
-To disable automatic waffle check and treat `undefined` values like `false`, use a provider to configure
+To enable automatic waffle check and treat `undefined` values like errors, use a provider to configure
 the `Waffle` module from the user code.
 
 ```js
 angular.module('UserApp', ['Waffle'])
     .config(function (WaffleConfigProvider) {
         WaffleConfigProvider.set({
-            warnIfMissingFlag: false
+            warnIfMissingFlag: true
         });
     });
 ```
